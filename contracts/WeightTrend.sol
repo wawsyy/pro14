@@ -17,6 +17,7 @@ contract WeightTrend is SepoliaConfig {
     mapping(address => uint256) private _lastUpdateDay; // user => last update day
 
     /// @notice Store encrypted weight for today
+    /// @dev Weight validation ensures data integrity
     /// @param weight external encrypted weight handle
     /// @param inputProof input proof returned by the relayer SDK encrypt()
     function submitWeight(externalEuint32 weight, bytes calldata inputProof) external {
@@ -91,4 +92,5 @@ contract WeightTrend is SepoliaConfig {
         return _records[msg.sender][day].timestamp > 0;
     }
 }
+
 
