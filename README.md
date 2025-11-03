@@ -4,6 +4,9 @@ A fully homomorphic encryption (FHE) enabled application for tracking daily weig
 
 ## Features
 
+- **Privacy Protection**: Advanced encryption for sensitive data
+- **Real-time Analytics**: Live trend monitoring capabilities
+
 - **Encrypted Weight Storage**: Submit daily weight data that remains encrypted on-chain
 - **Trend Analysis**: Compare today's weight with yesterday's weight without revealing actual values
 - **Privacy-First**: Uses Zama FHEVM for fully homomorphic encryption
@@ -76,7 +79,7 @@ A fully homomorphic encryption (FHE) enabled application for tracking daily weig
 ```
 weight-trend-fhevm/
 ├── contracts/           # Smart contract source files
-│   └── WeightTrend.sol  # FHE weight tracking contract
+�?  └── WeightTrend.sol  # FHE weight tracking contract
 ├── deploy/              # Deployment scripts
 ├── tasks/               # Hardhat custom tasks
 ├── test/                # Test files
@@ -116,4 +119,5 @@ This project is licensed under the BSD-3-Clause-Clear License.
 ---
 
 **Built with ❤️ using Zama FHEVM**
+
 
