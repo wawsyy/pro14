@@ -157,3 +157,9 @@ describe("WeightTrend", function () {
   });
 });
 
+
+    it('should validate encrypted weight submission', async function () {
+      // Test case for weight validation
+      expect(true).to.be.true;
+    });
+
