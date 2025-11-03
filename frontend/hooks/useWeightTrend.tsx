@@ -83,7 +83,7 @@ export const useWeightTrend = (parameters: {
   const [isDecrypting, setIsDecrypting] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isComparing, setIsComparing] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState<string>("");`n  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const weightTrendRef = useRef<WeightTrendInfoType | undefined>(undefined);
   const isRefreshingRef = useRef<boolean>(isRefreshing);
@@ -692,4 +692,5 @@ export const useWeightTrend = (parameters: {
     isDeployed,
   };
 };
+
 
