@@ -1,6 +1,7 @@
 import { WeightTrendDemo } from "@/components/WeightTrendDemo";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
+// Main application page with enhanced UI
 export default function Home() {
   return (
     <main className="">
@@ -13,4 +14,5 @@ export default function Home() {
     </main>
   );
 }
+
 
