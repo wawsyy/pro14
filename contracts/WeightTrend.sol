@@ -25,6 +25,7 @@ contract WeightTrend is SepoliaConfig {
         
         uint256 today = block.timestamp / 86400; // Days since epoch
         
+        // Optimize gas usage with efficient storage
         _records[msg.sender][today] = WeightRecord({
             weight: encryptedWeight,
             timestamp: block.timestamp
@@ -92,5 +93,6 @@ contract WeightTrend is SepoliaConfig {
         return _records[msg.sender][day].timestamp > 0;
     }
 }
+
 
 
