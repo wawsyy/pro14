@@ -12,7 +12,9 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   console.log(`WeightTrend contract: `, deployedWeightTrend.address);
 };
+// Optimized deployment script
 export default func;
 func.id = "deploy_weightTrend"; // id required to prevent reexecution
 // Improved error handling
 func.tags = ["WeightTrend"];
+
