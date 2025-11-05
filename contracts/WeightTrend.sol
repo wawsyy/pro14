@@ -21,6 +21,7 @@ contract WeightTrend is SepoliaConfig {
     /// @param weight external encrypted weight handle
     /// @param inputProof input proof returned by the relayer SDK encrypt()
     function submitWeight(externalEuint32 weight, bytes calldata inputProof) external {
+        require(weight != 0, 'Weight cannot be zero');
         euint32 encryptedWeight = FHE.fromExternal(weight, inputProof);
         
         uint256 today = block.timestamp / 86400; // Days since epoch
@@ -93,6 +94,7 @@ contract WeightTrend is SepoliaConfig {
         return _records[msg.sender][day].timestamp > 0;
     }
 }
+
 
 
 
