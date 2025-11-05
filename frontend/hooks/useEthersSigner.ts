@@ -15,6 +15,7 @@ function walletClientToSigner(walletClient: any): Promise<JsonRpcSigner> {
   return signer;
 }
 
+// Enhanced ethers signer hook with improved error handling
 export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
   const { data: walletClient } = useWalletClient({ chainId });
   const [signer, setSigner] = useState<JsonRpcSigner | undefined>(undefined);
@@ -72,4 +73,5 @@ export function useEthersProvider({ chainId }: { chainId?: number } = {}) {
     return new JsonRpcProvider(rpcUrl, network);
   }, [publicClient, chainId]);
 }
+
 
