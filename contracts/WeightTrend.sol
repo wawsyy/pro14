@@ -5,6 +5,8 @@ import {FHE, euint32, ebool, externalEuint32} from "@fhevm/solidity/lib/FHE.sol"
 import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 
 /// @title WeightTrend
+/// @author FHEVM Development Team
+/// @notice Encrypted weight tracking contract
 /// @notice A contract for tracking encrypted daily weight and determining if weight decreased
 /// @dev Uses Zama FHEVM to encrypt weight data and perform encrypted comparisons
 contract WeightTrend is SepoliaConfig {
@@ -94,6 +96,7 @@ contract WeightTrend is SepoliaConfig {
         return _records[msg.sender][day].timestamp > 0;
     }
 }
+
 
 
 
