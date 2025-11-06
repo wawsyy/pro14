@@ -79,7 +79,7 @@ A fully homomorphic encryption (FHE) enabled application for tracking daily weig
 ```
 weight-trend-fhevm/
 ├── contracts/           # Smart contract source files
-�?  └── WeightTrend.sol  # FHE weight tracking contract
+�?  └── WeightTrend.sol  # FHE weight tracking contract
 ├── deploy/              # Deployment scripts
 ├── tasks/               # Hardhat custom tasks
 ├── test/                # Test files
@@ -111,6 +111,12 @@ The actual weight values are never revealed on-chain - only the comparison resul
 - [FHEVM Documentation](https://docs.zama.ai/fhevm)
 - [FHEVM Hardhat Setup Guide](https://docs.zama.ai/protocol/solidity-guides/getting-started/setup)
 - [FHEVM Testing Guide](https://docs.zama.ai/protocol/solidity-guides/development-guide/hardhat/write_test)
+
+## 🔒 Security Considerations
+
+- All weight data is encrypted using FHEVM
+- Private keys are never exposed on-chain
+- Smart contract follows best practices for secure development
 
 ## 📄 License
 
