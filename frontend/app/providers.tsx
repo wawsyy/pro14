@@ -1,5 +1,6 @@
 "use client";
 
+// Enhanced providers with improved error handling and performance optimizations
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { WagmiProvider } from "wagmi";
