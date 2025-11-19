@@ -20,11 +20,23 @@ const dirname = path.basename(dir);
 const line =
   "\n===================================================================\n";
 
-if (!fs.existsSync(dir)) {
-  console.error(
-    `${line}Unable to locate ${rel}. Expecting <root>/${dirname}${line}`
-  );
-  process.exit(1);
+// Try to find deployments directory
+// First try ../deployments (local development)
+// Then try ./deployments (Vercel build environment)
+let deploymentsDir = null;
+if (fs.existsSync(dir)) {
+  const parentDeploymentsDir = path.join(dir, "deployments");
+  if (fs.existsSync(parentDeploymentsDir)) {
+    deploymentsDir = parentDeploymentsDir;
+  }
+}
+
+// If not found in parent, try current directory (for Vercel builds)
+if (!deploymentsDir) {
+  const currentDeploymentsDir = path.resolve("./deployments");
+  if (fs.existsSync(currentDeploymentsDir)) {
+    deploymentsDir = currentDeploymentsDir;
+  }
 }
 
 if (!fs.existsSync(outdir)) {
@@ -32,16 +44,24 @@ if (!fs.existsSync(outdir)) {
   process.exit(1);
 }
 
-const deploymentsDir = path.join(dir, "deployments");
-
 function readDeployment(chainName, chainId, contractName, optional) {
+  if (!deploymentsDir) {
+    if (!optional) {
+      console.error(
+        `${line}Unable to locate deployments directory.${line}`
+      );
+      process.exit(1);
+    }
+    return undefined;
+  }
+
   const chainDeploymentDir = path.join(deploymentsDir, chainName);
 
   if (!fs.existsSync(chainDeploymentDir)) {
-    console.error(
-      `${line}Unable to locate '${chainDeploymentDir}' directory.\n\n1. Goto '${dirname}' directory\n2. Run 'npx hardhat deploy --network ${chainName}'.${line}`
-    );
     if (!optional) {
+      console.error(
+        `${line}Unable to locate '${chainDeploymentDir}' directory.\n\n1. Goto '${dirname}' directory\n2. Run 'npx hardhat deploy --network ${chainName}'.${line}`
+      );
       process.exit(1);
     }
     return undefined;
@@ -67,7 +87,16 @@ if (!deployLocalhost) {
 // Sepolia is optional
 let deploySepolia = readDeployment("sepolia", 11155111, CONTRACT_NAME, true /* optional */);
 
+// If no deployments found, check if ABI files already exist (for Vercel builds)
 if (!deployLocalhost && !deploySepolia) {
+  const existingABIFile = path.join(outdir, `${CONTRACT_NAME}ABI.ts`);
+  const existingAddressesFile = path.join(outdir, `${CONTRACT_NAME}Addresses.ts`);
+  
+  if (fs.existsSync(existingABIFile) && fs.existsSync(existingAddressesFile)) {
+    console.log("No deployments found, but ABI files already exist. Skipping generation.");
+    process.exit(0);
+  }
+  
   console.error(`${line}No deployments found. Please deploy the contract first.${line}`);
   process.exit(1);
 }
