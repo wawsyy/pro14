@@ -165,13 +165,23 @@ export function useFhevm(parameters: {
           }
 
           // Convert technical errors to friendly error messages
-          const friendlyError = new Error(
-            e instanceof Error && e.message.includes("Failed to fetch")
-              ? "Network connection failed, please check your network connection or ensure Hardhat node is running"
-              : e instanceof Error
-              ? e.message
-              : String(e)
-          );
+          let friendlyMessage: string;
+          if (e instanceof Error) {
+            const msg = e.message;
+            if (msg.includes("Failed to fetch") || msg.includes("fetch failed")) {
+              friendlyMessage = "Network connection failed, please check your network connection or ensure Hardhat node is running";
+            } else if (msg.includes("Relayer") && (msg.includes("Bad JSON") || msg.includes("ERR_CONNECTION_CLOSED") || msg.includes("testnet.zama"))) {
+              friendlyMessage = "FHEVM Relayer service is temporarily unavailable. Please try again later or use local Hardhat network for testing";
+            } else if (msg.includes("RelayerSDK") || msg.includes("window.relayerSDK")) {
+              friendlyMessage = "FHEVM SDK loading failed, please refresh the page and try again";
+            } else {
+              friendlyMessage = msg;
+            }
+          } else {
+            friendlyMessage = String(e);
+          }
+          
+          const friendlyError = new Error(friendlyMessage);
           friendlyError.name = e instanceof Error ? e.name : "Error";
           
           console.log(`[useFhevm] Error occurred: ${friendlyError.message}`);
