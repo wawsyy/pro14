@@ -13,7 +13,7 @@
     "start": "next start",
     "lint": "next lint"
   },
-  "dependencies": {`n    // Core dependencies for FHEVM integration
+  "dependencies": {
     "@rainbow-me/rainbowkit": "^2.2.8",
     "@tanstack/react-query": "^5.89.0",
     "@zama-fhe/relayer-sdk": "0.2.0",
