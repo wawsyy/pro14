@@ -637,7 +637,7 @@ export const useWeightTrend = (parameters: {
         const clearTrend: boolean = typeof decryptedValue === 'boolean' 
           ? decryptedValue 
           : typeof decryptedValue === 'bigint' 
-            ? decryptedValue !== 0n 
+            ? decryptedValue !== BigInt(0) 
             : Boolean(decryptedValue);
 
         setClearTrend({ handle: thisHandle, clear: clearTrend });
