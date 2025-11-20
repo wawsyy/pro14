@@ -2,8 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-.weight-trend-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 50%, #2d1b69 100%);
   min-height: 100vh;
+  color: #ffffff;
 }
 

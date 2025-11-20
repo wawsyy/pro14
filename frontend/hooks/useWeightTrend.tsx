@@ -475,7 +475,18 @@ export const useWeightTrend = (parameters: {
             return;
           }
 
+          // Wait for FHE.allow() authorization to take effect
+          // This is especially important for mock FHEVM where state updates may be async
+          setMessage("Waiting for authorization to take effect...");
+          await new Promise(resolve => setTimeout(resolve, 3000));
+
+          if (isStale()) {
+            setMessage("Ignoring compareWeightTrend result");
+            return;
+          }
+
           // After confirmation, use staticCall to get return value
+          // The handle returned should be authorized since FHE.allow() was called in the transaction
           setMessage("Getting comparison result...");
           const callResult = await contract.compareWeightTrend.staticCall();
           
@@ -611,17 +622,58 @@ export const useWeightTrend = (parameters: {
 
         setMessage("Call FHEVM userDecrypt...");
 
+        // Wait a bit to ensure authorization is fully processed
+        // This is especially important for mock FHEVM
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        if (isStale()) {
+          setMessage("Ignore FHEVM decryption");
+          return;
+        }
+
         // Use userDecrypt method to decrypt ebool (same way as decrypting euint32)
-        const res = await instance.userDecrypt(
-          [{ handle: thisHandle, contractAddress: thisAddress }],
-          sig.privateKey,
-          sig.publicKey,
-          sig.signature,
-          sig.contractAddresses,
-          sig.userAddress,
-          sig.startTimestamp,
-          sig.durationDays
-        );
+        // Retry logic for authorization issues
+        let res;
+        let retryCount = 0;
+        const maxRetries = 3;
+        
+        while (retryCount < maxRetries) {
+          try {
+            res = await instance.userDecrypt(
+              [{ handle: thisHandle, contractAddress: thisAddress }],
+              sig.privateKey,
+              sig.publicKey,
+              sig.signature,
+              sig.contractAddresses,
+              sig.userAddress,
+              sig.startTimestamp,
+              sig.durationDays
+            );
+            break; // Success, exit retry loop
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            if (errorMessage.includes("not authorized") && retryCount < maxRetries - 1) {
+              retryCount++;
+              setMessage(`Authorization pending, retrying (${retryCount}/${maxRetries})...`);
+              // Wait longer before retry
+              await new Promise(resolve => setTimeout(resolve, 2000 * retryCount));
+              
+              if (isStale()) {
+                setMessage("Ignore FHEVM decryption");
+                return;
+              }
+              continue;
+            } else {
+              // Re-throw if not authorization error or max retries reached
+              throw error;
+            }
+          }
+        }
+
+        if (!res) {
+          setMessage("Failed to decrypt trend after retries");
+          return;
+        }
 
         setMessage("FHEVM userDecrypt completed!");
 

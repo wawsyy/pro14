@@ -15,6 +15,7 @@ types
 deployments
 !frontend/deployments/sepolia/WeightTrend.json
 tmp
+.next
 
 # files
 *.env

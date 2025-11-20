@@ -8,6 +8,7 @@ import { errorNotDeployed } from "./ErrorNotDeployed";
 import { useAccount, useChainId, usePublicClient } from "wagmi";
 import { useRef, useState, useMemo, useEffect } from "react";
 import { getFriendlyErrorMessage } from "@/utils/errorHandler";
+import './WeightTrendDemo.css';
 
 export const WeightTrendDemo = () => {
   const { storage: fhevmDecryptionSignatureStorage } = useInMemoryStorage();
@@ -59,25 +60,15 @@ export const WeightTrendDemo = () => {
     sameSigner: sameSignerRef,
   });
 
-  const buttonClass =
-    "inline-flex items-center justify-center rounded-xl bg-black px-4 py-4 font-semibold text-white shadow-sm " +
-    "transition-colors duration-200 hover:bg-blue-700 active:bg-blue-800 " +
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 " +
-    "disabled:opacity-50 disabled:pointer-events-none";
-
-  const titleClass = "font-semibold text-black text-lg mt-4";
-
   // Show consistent structure during SSR to prevent hydration mismatch
   if (!mounted) {
     return (
-      <div className="grid w-full gap-4">
-        <div className="col-span-full mx-20 bg-black text-white rounded-lg p-5">
-          <p className="font-semibold text-3xl m-5">
-            Encrypted Weight Trend System
-          </p>
-          <p className="text-gray-300 ml-5">
-            Loading...
-          </p>
+      <div className="weight-trend-app">
+        <div className="weight-trend-main">
+          <div className="weight-trend-card">
+            <h2 className="card-title">⚖️ Encrypted Weight Trend System</h2>
+            <p style={{ color: '#94a3b8' }}>Loading...</p>
+          </div>
         </div>
       </div>
     );
@@ -85,10 +76,15 @@ export const WeightTrendDemo = () => {
 
   if (!isConnected) {
     return (
-      <div className="grid w-full gap-4">
-        <div className="col-span-full mx-20 bg-black text-white rounded-lg p-5">
-          <p className="text-2xl text-white mb-4">Please connect your Rainbow wallet</p>
-          <p className="text-white">Use the Connect button in the top right corner</p>
+      <div className="weight-trend-app">
+        <div className="weight-trend-main">
+          <div className="connect-message">
+            <h2>🔗 Connect Your Wallet</h2>
+            <p>Please connect your wallet to start tracking your weight</p>
+            <p style={{ fontSize: '0.875rem', marginTop: '1rem' }}>
+              Use the Connect button in the header
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -107,209 +103,184 @@ export const WeightTrendDemo = () => {
   };
 
   return (
-    <div className="grid w-full gap-4">
-      <div className="col-span-full mx-20 bg-black text-white rounded-lg p-5">
-        <p className="font-semibold text-3xl m-5">
-          Encrypted Weight Trend System
-        </p>
-        <p className="text-gray-300 ml-5">
-          Track your daily weight changes with fully homomorphic encryption
-        </p>
-      </div>
-
-      <div className="col-span-full mx-20 mt-4 px-5 pb-4 rounded-lg bg-white border-2 border-black">
-        <p className={titleClass}>Chain Info</p>
-        <p className="text-black">
-          ChainId: <span className="font-mono font-semibold">{chainId}</span>
-        </p>
-        <p className="text-black">
-          Account: <span className="font-mono font-semibold">{address}</span>
-        </p>
-        <p className={titleClass}>Contract</p>
-        <p className="text-black">
-          WeightTrend: <span className="font-mono font-semibold">{weightTrend.contractAddress || "Not deployed"}</span>
-        </p>
-        <p className="text-black">
-          isDeployed: <span className="font-mono font-semibold text-green-500">{String(weightTrend.isDeployed)}</span>
-        </p>
-      </div>
-
-      <div className="col-span-full mx-20">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-lg bg-white border-2 border-black pb-4 px-4">
-            <p className={titleClass}>FHEVM Instance</p>
-            <p className="text-black">
-              Fhevm Instance: <span className="font-mono font-semibold">{fhevmInstance ? "OK" : "undefined"}</span>
-            </p>
-            <p className="text-black">
-              Fhevm Status: <span className="font-mono font-semibold">{fhevmStatus}</span>
-            </p>
-            <p className="text-black">
-              Fhevm Error: <span className={`font-mono font-semibold ${fhevmError ? "text-red-600" : "text-green-600"}`}>
-                {fhevmError ? getFriendlyErrorMessage(fhevmError) : "No Error"}
-              </span>
-            </p>
-            {fhevmError && fhevmStatus === "error" && (
-              <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800">
-                <p className="font-semibold">Tip:</p>
-                <p>If this is a network connection error, please ensure:</p>
-                <ul className="list-disc list-inside ml-2 mt-1">
-                  <li>Hardhat node is running (run 'npx hardhat node')</li>
-                  <li>Network connection is normal</li>
-                  <li>Refresh the page and try again</li>
-                </ul>
+    <div className="weight-trend-app">
+      <div className="weight-trend-main">
+        {/* Chain & Contract Info Card */}
+        <div className="weight-trend-card info-card">
+          <h2 className="card-title">📊 Chain Information</h2>
+          <div className="stats-grid">
+            <div className="stat-item">
+              <div className="stat-label">Chain ID</div>
+              <div className="stat-value info">{chainId}</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-label">Account</div>
+              <div className="stat-value info" style={{ fontSize: '0.875rem', fontFamily: 'monospace' }}>
+                {address?.slice(0, 6)}...{address?.slice(-4)}
               </div>
-            )}
-          </div>
-          <div className="rounded-lg bg-white border-2 border-black pb-4 px-4">
-            <p className={titleClass}>Status</p>
-            <p className="text-black">
-              isRefreshing: <span className="font-mono font-semibold">{String(weightTrend.isRefreshing)}</span>
-            </p>
-            <p className="text-black">
-              isDecrypting: <span className="font-mono font-semibold">{String(weightTrend.isDecrypting)}</span>
-            </p>
-            <p className="text-black">
-              isSubmitting: <span className="font-mono font-semibold">{String(weightTrend.isSubmitting)}</span>
-            </p>
-            <p className="text-black">
-              isComparing: <span className="font-mono font-semibold">{String(weightTrend.isComparing)}</span>
-            </p>
+            </div>
+            <div className="stat-item">
+              <div className="stat-label">Contract</div>
+              <div className="stat-value info" style={{ fontSize: '0.875rem', fontFamily: 'monospace' }}>
+                {weightTrend.contractAddress?.slice(0, 6)}...{weightTrend.contractAddress?.slice(-4)}
+              </div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-label">Status</div>
+              <div className={`status-indicator ${weightTrend.isDeployed ? 'status-success' : 'status-error'}`}>
+                {weightTrend.isDeployed ? '✅ Deployed' : '❌ Not Deployed'}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="col-span-full mx-20 px-4 pb-4 rounded-lg bg-white border-2 border-black">
-        <p className={titleClass}>Submit Weight</p>
-        <div className="flex gap-4 mt-4">
-          <input
-            type="number"
-            value={weightInput}
-            onChange={(e) => setWeightInput(e.target.value)}
-            placeholder="Enter weight in kg (e.g., 70.5)"
-            className="flex-1 px-4 py-2 border-2 border-black rounded-lg"
-            min="0"
-            max="1000"
-            step="0.1"
-          />
-          <button
-            className={buttonClass}
-            disabled={!weightTrend.canSubmitWeight || !weightInput}
-            onClick={handleSubmitWeight}
-          >
-            {weightTrend.isSubmitting
-              ? "Submitting..."
-              : weightTrend.canSubmitWeight
-                ? "Submit Weight"
-                : "Cannot submit"}
-          </button>
+        {/* Submit Weight Card */}
+        <div className="weight-trend-card action-card">
+          <h2 className="card-title">⚖️ Submit Weight</h2>
+          <p style={{ color: '#cbd5e1', marginBottom: '1.5rem' }}>
+            Enter your weight in kilograms. The value will be encrypted before being stored on-chain.
+          </p>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <input
+              type="number"
+              value={weightInput}
+              onChange={(e) => setWeightInput(e.target.value)}
+              placeholder="Enter weight in kg (e.g., 70.5)"
+              className="weight-input"
+              min="0"
+              max="1000"
+              step="0.1"
+            />
+            <button
+              className={`weight-trend-button button-primary ${!weightTrend.canSubmitWeight || !weightInput ? 'button-disabled' : ''}`}
+              disabled={!weightTrend.canSubmitWeight || !weightInput}
+              onClick={handleSubmitWeight}
+            >
+              {weightTrend.isSubmitting
+                ? "⏳ Submitting..."
+                : weightTrend.canSubmitWeight
+                  ? "📤 Submit Weight"
+                  : "❌ Cannot Submit"}
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div className="col-span-full mx-20 px-4 pb-4 rounded-lg bg-white border-2 border-black">
-        <p className={titleClass}>Today's Weight</p>
-        <p className="text-black">
-          Weight Handle: <span className="font-mono font-semibold text-gray-600">
-            {typeof weightTrend.todayWeightHandle === 'string' 
-              ? weightTrend.todayWeightHandle 
-              : weightTrend.todayWeightHandle 
-                ? String(weightTrend.todayWeightHandle) 
-                : "Not set"}
-          </span>
-        </p>
-        <p className="text-black">
-          Clear Weight: <span className="font-mono font-semibold text-green-500">
-            {weightTrend.isTodayWeightDecrypted
-              ? `${Number(weightTrend.clearTodayWeight) / 10} kg`
-              : "Not decrypted"}
-          </span>
-        </p>
-        <div className="flex gap-4 mt-4">
-          <button
-            className={buttonClass}
-            disabled={!weightTrend.canGetTodayWeight}
-            onClick={weightTrend.refreshTodayWeight}
-          >
-            {weightTrend.canGetTodayWeight
-              ? "Refresh Today's Weight"
-              : "Cannot refresh"}
-          </button>
-          <button
-            className={buttonClass}
-            disabled={!weightTrend.canDecryptTodayWeight}
-            onClick={weightTrend.decryptTodayWeight}
-          >
-            {weightTrend.canDecryptTodayWeight
-              ? "Decrypt Today's Weight"
-              : weightTrend.isTodayWeightDecrypted
-                ? "Already Decrypted"
-                : weightTrend.isDecrypting
-                  ? "Decrypting..."
-                  : "Nothing to decrypt"}
-          </button>
+        {/* Today's Weight Card */}
+        <div className="weight-trend-card action-card">
+          <h2 className="card-title">📅 Today's Weight</h2>
+          <div className="stats-grid">
+            <div className="stat-item">
+              <div className="stat-label">Encrypted Handle</div>
+              <div className="stat-value encrypted">
+                {typeof weightTrend.todayWeightHandle === 'string' 
+                  ? weightTrend.todayWeightHandle.slice(0, 20) + '...'
+                  : weightTrend.todayWeightHandle 
+                    ? String(weightTrend.todayWeightHandle).slice(0, 20) + '...'
+                    : '🔒 Not Set'}
+              </div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-label">Decrypted Value</div>
+              <div className={`stat-value ${weightTrend.isTodayWeightDecrypted ? 'success' : 'encrypted'}`}>
+                {weightTrend.isTodayWeightDecrypted
+                  ? `✅ ${Number(weightTrend.clearTodayWeight) / 10} kg`
+                  : '🔒 Encrypted'}
+              </div>
+            </div>
+          </div>
+          <div className="button-group">
+            <button
+              className={`weight-trend-button button-secondary ${!weightTrend.canGetTodayWeight ? 'button-disabled' : ''}`}
+              disabled={!weightTrend.canGetTodayWeight}
+              onClick={weightTrend.refreshTodayWeight}
+            >
+              {weightTrend.canGetTodayWeight
+                ? "🔄 Refresh Today's Weight"
+                : "❌ Cannot Refresh"}
+            </button>
+            <button
+              className={`weight-trend-button button-success ${!weightTrend.canDecryptTodayWeight ? 'button-disabled' : ''}`}
+              disabled={!weightTrend.canDecryptTodayWeight}
+              onClick={weightTrend.decryptTodayWeight}
+            >
+              {weightTrend.canDecryptTodayWeight
+                ? "🔓 Decrypt Today's Weight"
+                : weightTrend.isTodayWeightDecrypted
+                  ? "✅ Already Decrypted"
+                  : weightTrend.isDecrypting
+                    ? "⏳ Decrypting..."
+                    : "❌ Nothing to Decrypt"}
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div className="col-span-full mx-20 px-4 pb-4 rounded-lg bg-white border-2 border-black">
-        <p className={titleClass}>Weight Trend Comparison</p>
-        <p className="text-black">
-          Trend Handle: <span className="font-mono font-semibold text-gray-600">
-            {typeof weightTrend.trendHandle === 'string' 
-              ? weightTrend.trendHandle 
-              : weightTrend.trendHandle 
-                ? String(weightTrend.trendHandle) 
-                : "Not compared"}
-          </span>
-        </p>
-        <p className="text-black">
-          Trend Result: <span className="font-mono font-semibold text-green-500">
-            {weightTrend.isTrendDecrypted
-              ? weightTrend.clearTrend
-                ? "📉 Weight Decreased!"
-                : "📈 Weight Increased or Same"
-              : "Not decrypted"}
-          </span>
-        </p>
-        <div className="flex gap-4 mt-4">
-          <button
-            className={buttonClass}
-            disabled={!weightTrend.canCompareTrend}
-            onClick={weightTrend.compareTrend}
-          >
-            {weightTrend.canCompareTrend
-              ? "Compare Trend"
-              : weightTrend.isComparing
-                ? "Comparing..."
-                : "Cannot compare"}
-          </button>
-          <button
-            className={buttonClass}
-            disabled={!weightTrend.canDecryptTrend}
-            onClick={weightTrend.decryptTrend}
-          >
-            {weightTrend.canDecryptTrend
-              ? "Decrypt Trend"
-              : weightTrend.isTrendDecrypted
-                ? "Already Decrypted"
-                : weightTrend.isDecrypting
-                  ? "Decrypting..."
-                  : "Nothing to decrypt"}
-          </button>
+        {/* Weight Trend Comparison Card */}
+        <div className="weight-trend-card action-card">
+          <h2 className="card-title">📈 Weight Trend Comparison</h2>
+          <div className="stats-grid">
+            <div className="stat-item">
+              <div className="stat-label">Trend Handle</div>
+              <div className="stat-value encrypted">
+                {typeof weightTrend.trendHandle === 'string' 
+                  ? weightTrend.trendHandle.slice(0, 20) + '...'
+                  : weightTrend.trendHandle 
+                    ? String(weightTrend.trendHandle).slice(0, 20) + '...'
+                    : '🔒 Not Compared'}
+              </div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-label">Trend Result</div>
+              <div className={`stat-value ${weightTrend.isTrendDecrypted 
+                ? (weightTrend.clearTrend ? 'success' : 'error')
+                : 'encrypted'}`}>
+                {weightTrend.isTrendDecrypted
+                  ? weightTrend.clearTrend
+                    ? "📉 Weight Decreased!"
+                    : "📈 Weight Increased or Same"
+                  : '🔒 Encrypted'}
+              </div>
+            </div>
+          </div>
+          <div className="button-group">
+            <button
+              className={`weight-trend-button button-primary ${!weightTrend.canCompareTrend ? 'button-disabled' : ''}`}
+              disabled={!weightTrend.canCompareTrend}
+              onClick={weightTrend.compareTrend}
+            >
+              {weightTrend.canCompareTrend
+                ? "⚖️ Compare Trend"
+                : weightTrend.isComparing
+                  ? "⏳ Comparing..."
+                  : "❌ Cannot Compare"}
+            </button>
+            <button
+              className={`weight-trend-button button-success ${!weightTrend.canDecryptTrend ? 'button-disabled' : ''}`}
+              disabled={!weightTrend.canDecryptTrend}
+              onClick={weightTrend.decryptTrend}
+            >
+              {weightTrend.canDecryptTrend
+                ? "🔓 Decrypt Trend"
+                : weightTrend.isTrendDecrypted
+                  ? "✅ Already Decrypted"
+                  : weightTrend.isDecrypting
+                    ? "⏳ Decrypting..."
+                    : "❌ Nothing to Decrypt"}
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div className="col-span-full mx-20 p-4 rounded-lg bg-white border-2 border-black">
-        <p className={titleClass}>Message</p>
-        <p className="text-black font-mono">
-          {typeof weightTrend.message === 'string' 
-            ? weightTrend.message 
-            : weightTrend.message 
-              ? String(weightTrend.message) 
-              : "Ready"}
-        </p>
+        {/* Message Card */}
+        <div className="weight-trend-card">
+          <h2 className="card-title">💬 Status Message</h2>
+          <div className="message-display">
+            {typeof weightTrend.message === 'string' 
+              ? weightTrend.message 
+              : weightTrend.message 
+                ? String(weightTrend.message) 
+                : "✅ Ready"}
+          </div>
+        </div>
       </div>
     </div>
   );
 };
-
-

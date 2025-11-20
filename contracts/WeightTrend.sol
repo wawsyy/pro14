@@ -19,11 +19,12 @@ contract WeightTrend is SepoliaConfig {
     mapping(address => uint256) private _lastUpdateDay; // user => last update day
 
     /// @notice Store encrypted weight for today
-    /// @dev Weight validation ensures data integrity
+    /// @dev Weight validation should be done on the client side before encryption
     /// @param weight external encrypted weight handle
     /// @param inputProof input proof returned by the relayer SDK encrypt()
     function submitWeight(externalEuint32 weight, bytes calldata inputProof) external {
-        require(weight != 0, 'Weight cannot be zero');
+        // Note: externalEuint32 cannot be directly compared with integers
+        // Weight validation should be performed on the client side before encryption
         euint32 encryptedWeight = FHE.fromExternal(weight, inputProof);
         
         uint256 today = block.timestamp / 86400; // Days since epoch
